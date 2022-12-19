@@ -5,6 +5,7 @@ import shutil  # to copy files
 # tests were done with pyarrow as the parquet engine, <pip install pyarrow>
 
 
+# converts a folder of csv files to parquet files
 def csv_to_parquet(file_name):
     print(f"\nProcessing: {file_name}")
 
@@ -26,6 +27,7 @@ def csv_to_parquet(file_name):
         shutil.copy(input_path, OUTPUT_PARQUET_LOCATION)
 
 
+# Coverts a folder of parquet files to csv files
 def parquet_to_csv(file_name):
     print(f"\nProcessing: {file_name}")
 
@@ -48,29 +50,43 @@ def parquet_to_csv(file_name):
 
 
 if __name__ == "__main__":
+    # --------------------------------------------------------------------------------------
     # used absolute paths here since we have different operating systems
-    # don't forget the '/' at the end of the file path
+    # example file path: "C:/Apache-Parquet/input-data/"
+    # don't forget the '/' at the end of the file path!
 
-    INPUT_CSV_LOCATION = "C:/Apache-Parquet/input-data/"  # csv files to convert to parquet
-    OUTPUT_PARQUET_LOCATION = "C:/Apache-Parquet/output-parquet/"  # parquet files converted from csv
+    # csv file input location and parquet file output locations
+    INPUT_CSV_LOCATION = "C:/Apache-Parquet/input-data/"
+    OUTPUT_PARQUET_LOCATION = "C:/Apache-Parquet/output-parquet/"
 
-    INPUT_PARQUET_LOCATION = "C:/Apache-Parquet/output-parquet/"  # parquet files to convert back to csv
-    OUTPUT_CSV_LOCATION = "C:/Apache-Parquet/output-csv/"  # csv files converted from parquet
+    # parquet file input location and csv output locations
+    INPUT_PARQUET_LOCATION = "C:/Apache-Parquet/output-parquet/"
+    OUTPUT_CSV_LOCATION = "C:/Apache-Parquet/output-csv/"
+    # --------------------------------------------------------------------------------------
 
-    # sanity checks
+    # Checks for input data existence
     if not os.path.exists(INPUT_CSV_LOCATION) and not os.path.exists(INPUT_PARQUET_LOCATION):
         print("Error! No input data of any kind!")
         exit()
-    if OUTPUT_PARQUET_LOCATION and not os.path.exists(OUTPUT_PARQUET_LOCATION):
-        os.makedirs(OUTPUT_PARQUET_LOCATION)
-    if OUTPUT_CSV_LOCATION and not os.path.exists(OUTPUT_CSV_LOCATION):
-        os.makedirs(OUTPUT_CSV_LOCATION)
 
     # Converts csv data to parquet files
-    for file in os.listdir(INPUT_CSV_LOCATION):
-        csv_to_parquet(file)
+    if INPUT_CSV_LOCATION:
+        if not OUTPUT_PARQUET_LOCATION:
+            print("Error! No output parquet location!")
+            exit()
+        elif not os.path.exists(OUTPUT_PARQUET_LOCATION):
+            os.makedirs(OUTPUT_PARQUET_LOCATION)
+
+        for file in os.listdir(INPUT_CSV_LOCATION):
+            csv_to_parquet(file)
 
     # Reads the parquet files and converts back to csv files
-    for file in os.listdir(INPUT_PARQUET_LOCATION):
-        parquet_to_csv(file)
+    if INPUT_PARQUET_LOCATION:
+        if not OUTPUT_CSV_LOCATION:
+            print("Error! No output csv location!")
+            exit()
+        elif not os.path.exists(OUTPUT_CSV_LOCATION):
+            os.makedirs(OUTPUT_CSV_LOCATION)
 
+        for file in os.listdir(INPUT_PARQUET_LOCATION):
+            parquet_to_csv(file)
